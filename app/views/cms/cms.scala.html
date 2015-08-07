@@ -1,0 +1,9 @@
+@(page: CMSPage)
+
+@main(page.getTitle, page.getName) {
+
+    <h1>@page.getTitle</h1>
+    <div>
+        @Html(page.getBody)
+    </div>
+}

@@ -1,0 +1,121 @@
+@(localUser: models.User = null)
+
+@main(Messages("playauthenticate.navigation.permissions"), "permissions") {
+
+    <h1>@Messages("users.permissions.title")</h1>
+    <div>
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Last login</th>
+                    <th>Roles</th>
+                    <th> </th>
+                </tr>
+            </thead>
+            <tbody id="users-table">
+
+            </tbody>
+        </table>
+    </div>
+
+    <script type="application/javascript">
+        $(document).ready(function() {
+            var tableBody = $("#users-table");
+
+            var roles = [];
+
+            $.ajax("/roles").then(function(data) {roles = data});
+
+            function makeButton(key) {
+                return $("<button>").addClass("btn btn-link").append(
+                    $("<i>").addClass("glyphicon glyphicon-" + key)
+                );
+            }
+
+            function makeButtonRemoveRole(user, role) {
+                var href = "/users/" + user.id + "/roles/" + role;
+                return makeButton("trash")
+                    .click(function () {
+                        $.ajax({
+                            url: href,
+                            type: 'DELETE',
+                            success: function() {
+                                tableBody.userTable.update();
+                            }
+                        });
+                        return false;
+                    });
+            }
+
+            function makeRolesMenu(user) {
+                var menuUl = $("<ul>").addClass("dropdown-menu stay-open pull-right");
+                var href = "/users/" + user.id + "/roles/";
+                $.each(roles, function (index, role) {
+                    if ($.inArray(role, user.roles) != -1) return;
+                    var button = $("<a href='#'>").text(role).click(function () {
+                        $.ajax({
+                            url: href + role,
+                            type: 'PUT',
+                            success: function() {
+                                tableBody.userTable.update();
+                            }
+                        });
+                        return false;
+                    });
+                    menuUl.append($("<li>").append(button));
+                });
+                return menuUl;
+            }
+
+            function makeAddRoleButton(user) {
+                return $("<div>").addClass("btn-group").append(
+                    makeButton("plus")
+                        .addClass("dropdown-toggle")
+                        .attr("data-toggle", "dropdown")
+                        .attr("href", "/users/" + user.id + "/roles/")
+
+                ).append(makeRolesMenu(user));
+            }
+
+            function makeRolesList(user) {
+                var roles = user.roles;
+                if (roles.length <= 0) {
+                    return null;
+                }
+                var rolesUl = $("<ul>").addClass("list-unstyled");
+                $.each(roles, function (id, role) {
+                    rolesUl.append($("<li>")
+                        .append(makeButtonRemoveRole(user, role))
+                        .append(role))
+                });
+                return rolesUl;
+            }
+
+            tableBody.userTable = {
+                update: function () {
+                    $.ajax({
+                        url: "/users"
+                    }).then(function(data) {
+                       tableBody.empty();
+                       $.each(data, function(index, user) {
+                            var tr = $("<tr>");
+                            tr.append($("<td>").text(user.name));
+                            tr.append($("<td>").text(user.email));
+                            tr.append($("<td>").text(user.firstName));
+                            tr.append($("<td>").text(user.lastName));
+                            tr.append($("<td>").text(user.lastLogin));
+                            tr.append($("<td>").append(makeRolesList(user)));
+                            tr.append($("<td>").append(makeAddRoleButton(user)));
+                            tableBody.append(tr);
+                       });
+                    });
+                }
+            };
+            tableBody.userTable.update();
+        });
+    </script>
+}

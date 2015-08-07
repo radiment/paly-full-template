@@ -1,0 +1,96 @@
+@(page: CMSPage, isNew: Boolean = false)
+
+
+@scripts = {
+    <script type="text/javascript" src="@routes.Assets.versioned("tinymce/tinymce.min.js")" ></script >
+    <script type="text/javascript" >
+    tinymce.init({
+        selector: "#page-body",
+        theme: "modern",
+        plugins: [
+             "advlist autolink link image lists charmap print preview hr anchor pagebreak spellchecker",
+             "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
+             "save table contextmenu directionality emoticons template paste textcolor"
+        ],
+        toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | print preview media fullpage | forecolor backcolor",
+        file_browser_callback: function (field_name, url, type, win) {
+            tinymce.activeEditor.windowManager.open({
+                file: '@routes.FileManager.fileManager()',// use an absolute path!
+                title: 'elFinder 2.0',
+                width: 900,
+                height: 450,
+                resizable: 'yes'
+            }, {
+                setUrl: function (url) {
+                  win.document.getElementById(field_name).value = url;
+                }
+            });
+            return false;
+        }
+    });
+
+    $(document).ready(function() {
+        $("#page-save").click(function () {
+            console.log("click save");
+            tinyMCE.triggerSave();
+            $.ajax({
+                url: '@if(isNew) {@routes.CmsAdmin.savePage()} else {@routes.CmsAdmin.updatePage(page.getName)}',
+                type: @if(isNew) {'post'} else {'put'},
+                dataType: 'json',
+                data: $(document.pageForm).serialize(),
+                error: function(data) {
+                    console.log(data.responseText);
+                },
+                success: function() {
+                    console.log("success save");
+                    location.replace(document.referrer);
+                }
+            });
+            return false;
+        });
+    @if(!isNew) {
+        $("#page-delete").click(function () {
+            $.ajax({
+                url: '@routes.CmsAdmin.deletePage(page.getName)',
+                type: 'delete',
+                success: function(data) {
+                    console.log("success delete");
+                    location.replace(document.referrer);
+                }
+            });
+            return false;
+        });
+    }
+    });
+    </script >
+}
+
+@main(Messages("playauthenticate.navigation.cms.edit", page.getTitle), "cms-edit", scripts) {
+
+    <h1>@Messages("playauthenticate.navigation.cms.edit", page.getTitle)</h1>
+    <div>
+        <form name="pageForm" method="post">
+        @if(isNew) {
+            <div class="form-group">
+                <label for="page-name">Page Name</label>
+                <input type="text" required class="form-control" size="20" placeholder="PageId" id="page-name"
+                name="name" value="@page.getName">
+            </div>
+        } else {
+            <h3>Page identificator - "@page.getName"</h3>
+            <input type="hidden" required name="name" value="@page.getName">
+        }
+            <div class="form-group">
+                <label for="page-title">Page Title</label>
+                <input class="form-control" required type="text" size="60" id="page-title"
+                        name="title" value="@page.getTitle">
+            </div>
+            <div class="form-group">
+                <textarea class="form-control" rows="30" cols="60" id="page-body" name="body">@page.getBody</textarea>
+            </div>
+            <input class="btn btn-default" type="button" value="Cancel" onclick="history.go(-1);" />
+            <button id="page-save" class="btn btn-primary">Save</button>
+            @if(!isNew) {<button id="page-delete" class="btn btn-danger">Delete</button>}
+        </form>
+    </div>
+}

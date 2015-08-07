@@ -1,0 +1,71 @@
+@()
+
+<!DOCTYPE html>
+<html lang="@lang().code()">
+    <head>
+        <title>File Manager</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Play Authenticate - an authentication module for the Play! Framework 2.0">
+        <meta name="author" content="Dyomin Andrey">
+
+        <script type="text/javascript" src="@routes.Assets.versioned("lib/jquery/jquery.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("lib/jquery-ui/jquery-ui.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("lib/bootstrap/js/bootstrap.js")"></script>
+        <script type="text/javascript" src="@routes.Application.jsRoutes" defer="defer"></script>
+
+        <link rel="stylesheet" href="@routes.Assets.versioned("lib/bootstrap/css/bootstrap.css")">
+        <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("lib/jquery-ui/jquery-ui.css")">
+        <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("css/jquery-ui.theme.min.css")">
+
+        <title>ElFinder</title>
+
+        <!-- elFinder CSS (REQUIRED) -->
+        <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("elfinder/css/elfinder.min.css")">
+        <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("elfinder/css/theme.css")">
+
+            <!-- elFinder JS (REQUIRED) -->
+        <script src="@routes.Assets.versioned("elfinder/js/elfinder.full.js")"></script>
+
+            <!-- elFinder translation (OPTIONAL) -->
+        <script src="@routes.Assets.versioned("elfinder/js/i18n/elfinder.ru.js")"></script>
+
+            <!-- elFinder initialization (REQUIRED) -->
+        <script type="text/javascript" charset="utf-8">
+			// Documentation for client options:
+			// https://github.com/Studio-42/elFinder/wiki/Client-configuration-options
+			$(document).ready(function() {
+				$('#elfinder').elfinder({
+					url : '@routes.FileManager.control()',
+					lang: 'ru',                    // language (OPTIONAL)
+					getFileCallback: function(file) { // editor callback
+                        // file.url - commandsOptions.getfile.onlyURL = false (default)
+                        // file     - commandsOptions.getfile.onlyURL = true
+                        FileBrowserDialogue.mySubmit(file); // pass selected file path to TinyMCE
+                    }
+				});
+			});
+
+			var FileBrowserDialogue = {
+                init: function() {
+                  // Here goes your code for setting your custom things onLoad.
+                },
+                mySubmit: function (obj) {
+                  // pass selected file path to TinyMCE
+                  parent.tinymce.activeEditor.windowManager.getParams().setUrl(obj.url);
+
+                  // close popup window
+                  parent.tinymce.activeEditor.windowManager.close();
+                }
+            };
+		</script>
+    </head>
+    <body>
+            <!-- Element where elFinder will be created (REQUIRED) -->
+        <div id="elfinder"></div>
+
+
+
+    </body>
+</html>

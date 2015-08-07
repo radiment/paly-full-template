@@ -1,0 +1,19 @@
+@(pages: List[CMSPage])
+
+@main(Messages("playauthenticate.navigation.cms.admin"), "cms-admin") {
+
+    <h1>@Messages("playauthenticate.navigation.cms.admin")</h1>
+    <div>
+        <ul class="list-unstyled">
+        @for(page <- pages) {
+            <li>
+                <a href="@routes.CmsAdmin.editPage(page.getName)">@page.getTitle</a>
+            </li>
+        }
+        </ul>
+
+        <a class="btn btn-primary" href="@routes.CmsAdmin.newPage()">New Page</a><br/>
+
+        @pages.size Pages found.
+    </div>
+}

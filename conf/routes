@@ -1,0 +1,72 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET           /                                      @controllers.Application.index
+GET           /restricted                            @controllers.Application.restricted
+GET           /downloads                             @controllers.Application.downloads
+GET           /assets/javascript/routes.js           @controllers.Application.jsRoutes
+
+GET           /profile                               @controllers.Application.profile
+
+GET           /login                                 @controllers.Application.login
+POST          /login                                 @controllers.Application.doLogin
+
+GET           /logout                                @controllers.Authenticate.logout
+GET           /authenticate/:provider                @controllers.Authenticate.authenticate(provider: String)
+
+GET           /signup                                @controllers.Application.signup
+POST          /signup                                @controllers.Application.doSignup
+
+GET           /accounts/unverified                   @controllers.Signup.unverified
+GET           /authenticate/:provider/denied         @controllers.Signup.oAuthDenied(provider: String)
+
+GET           /accounts/verify/:token                @controllers.Signup.verify(token: String)
+GET           /accounts/exists                       @controllers.Signup.exists
+
+GET           /accounts/password/reset/:token        @controllers.Signup.resetPassword(token: String)
+POST          /accounts/password/reset               @controllers.Signup.doResetPassword
+
+GET           /accounts/password/change              @controllers.Account.changePassword
+POST          /accounts/password/change              @controllers.Account.doChangePassword
+
+GET           /accounts/verify                       @controllers.Account.verifyEmail
+
+GET           /accounts/add                          @controllers.Account.link
+
+GET           /accounts/link                         @controllers.Account.askLink
+POST          /accounts/link                         @controllers.Account.doLink
+
+GET           /accounts/merge                        @controllers.Account.askMerge
+POST          /accounts/merge                        @controllers.Account.doMerge
+
+GET           /login/password/forgot                 @controllers.Signup.forgotPassword(email: String ?= "")
+POST          /login/password/forgot                 @controllers.Signup.doForgotPassword
+
+GET           /users/permissions                     @controllers.UserManagement.manageUserPermissions
+
+GET           /roles                                 @controllers.UserManagement.getRolesList
+
+GET           /users                                 @controllers.UserManagement.getUsers
+DELETE        /users/:userId/roles/:roleName         @controllers.UserManagement.removeRole(userId: Long, roleName: String)
+PUT           /users/:userId/roles/:roleName         @controllers.UserManagement.putRoleToUser(userId: Long, roleName: String)
+
+GET           /pages/:page                           @controllers.Frontend.show(page: String)
+GET           /file/:name                            @controllers.Frontend.file(name: String)
+
+# Admin
+GET           /admin                                 @controllers.CmsAdmin.index
+POST          /admin                                 @controllers.CmsAdmin.savePage
+GET           /admin/new                             @controllers.CmsAdmin.newPage
+GET           /admin/manager/control                 @controllers.FileManager.control
+POST          /admin/manager/control                 @controllers.FileManager.control
+GET           /admin/manager                         @controllers.FileManager.fileManager
+GET           /admin/:pageName                       @controllers.CmsAdmin.editPage(pageName: String)
+DELETE        /admin/:pageName                       @controllers.CmsAdmin.deletePage(pageName: String)
+PUT           /admin/:pageName                       @controllers.CmsAdmin.updatePage(pageName: String)
+
+#
+
+# Map static resources from the /public folder to the /assets URL path
+GET           /assets/*file                          @controllers.Assets.versioned(path="/public", file: Asset)

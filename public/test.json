@@ -1,0 +1,41 @@
+{
+  "cwd": {
+    "mime": "directory",
+    "ts": 1431006913,
+    "read": 1,
+    "write": 0,
+    "size": 0,
+    "hash": "l1_Lw",
+    "volumeid": "l1_",
+    "name": "Demo",
+    "locked": 1
+  },
+  "options": {
+    "path": "Demo",
+    "url": "http:\/\/elfinder.org\/files\/demo\/",
+    "tmbUrl": "http:\/\/elfinder.org\/files\/demo\/.tmb\/",
+    "disabled": [],
+    "separator": "\/",
+    "copyOverwrite": 1,
+    "archivers": {
+      "create": [
+        "application\/x-tar",
+        "application\/x-gzip",
+        "application\/x-bzip2",
+        "application\/x-xz",
+        "application\/zip"
+      ],
+      "extract": [
+        "application\/x-tar",
+        "application\/x-gzip",
+        "application\/x-bzip2",
+        "application\/x-xz",
+        "application\/zip"
+      ]
+    }
+  },
+  "files": [],
+  "api": "2.0",
+  "uplMaxSize": "32M",
+  "netDrivers": []
+}
