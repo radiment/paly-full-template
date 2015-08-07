@@ -1,4 +1,13 @@
-This is your new Play application
+This Play application with authentication and CMS
 =================================
 
-This file will be packaged with your application, when using `activator dist`.
+This Play project Sample contains:
+* Authentication
+* Simple CMS
+* TinyMCE - like editor
+* elFinder - like fileManager
+* Evolution supported but not used
+
+For run project you may use activator
+
+Configuration use postgres by default.
